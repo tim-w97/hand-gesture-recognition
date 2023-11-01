@@ -16,8 +16,14 @@ showed_text = ''
 def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
     global showed_text
 
+    showed_text = ''
+
     for gesture in result.gestures:
-        showed_text = str(gesture[0].category_name)
+        showed_text += str(gesture[0].category_name)
+        showed_text += ' + '
+
+    # remove the last '+'
+    showed_text = showed_text[:len(showed_text)-3]
 
 
 options = GestureRecognizerOptions(
@@ -45,7 +51,7 @@ def process_webcam_video():
         recognizer.recognize_async(mp_image, timestamp)
 
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(frame, showed_text, (10, 100), font, 5, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, showed_text, (10, 100), font, 4, (255, 255, 255), 5, cv2.LINE_AA)
 
         cv2.imshow('image', frame)
 
