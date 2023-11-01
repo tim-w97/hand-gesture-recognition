@@ -12,12 +12,14 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 
 # Create a gesture recognizer instance with the live stream mode:
 def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
-    print('gesture recognition result: {}'.format(result))
+    print(result.gestures)
 
 options = GestureRecognizerOptions(
     base_options=BaseOptions(model_asset_path='gesture_recognizer.task'),
     running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
+    result_callback=print_result,
+    num_hands=3
+)
 
 cap = cv2.VideoCapture(0)
 
@@ -26,6 +28,10 @@ frame_timestamp_ms = 0
 with GestureRecognizer.create_from_options(options) as recognizer:
     while True:
         ret, frame = cap.read()
+
+        if not ret:
+            print("Got no video stream!")
+            break
 
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
 
@@ -37,3 +43,5 @@ with GestureRecognizer.create_from_options(options) as recognizer:
 
         if cv2.waitKey(1) == ord('q'):
             break
+
+cap.release()
