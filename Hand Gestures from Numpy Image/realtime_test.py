@@ -1,5 +1,5 @@
 import cv2
-import recognizer
+import hand_recognizer
 
 cap = cv2.VideoCapture(0)
 
@@ -23,7 +23,7 @@ while True:
 
     flipped_image = cv2.flip(frame, 1)
 
-    json = recognizer.recognize_gestures(numpy_image=flipped_image)
+    json = hand_recognizer.recognize_all(numpy_image=flipped_image)
 
     output_image = draw_text_on_image(flipped_image, json)
 

@@ -16,6 +16,19 @@ options = vision.GestureRecognizerOptions(
 recognizer = vision.GestureRecognizer.create_from_options(options)
 
 
+# recognize both gestures and fingers count and return a json
+def recognize_all(numpy_image):
+    gestures = recognize_gestures(numpy_image)
+    fingers_amount = count_fingers(numpy_image)
+
+    result = {
+        "gestures": gestures,
+        "totalFingersAmount": fingers_amount
+    }
+
+    return json.dumps(result)
+
+
 # recognizes gestures from an image (number array) and returns them as a json
 def recognize_gestures(numpy_image):
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=numpy_image)
@@ -29,11 +42,7 @@ def recognize_gestures(numpy_image):
 
         gestures.append(gesture_list[0].category_name)
 
-    result = {
-      "gestures": gestures
-    }
-
-    return json.dumps(result)
+    return gestures
 
 
 # counts the fingers on an image (number array) and returns the result as a json
@@ -47,11 +56,7 @@ def count_fingers(numpy_image):
     for single_hand_landmarks in recognition_result.hand_landmarks:
         fingers_amount += count_fingers_on_single_hand(single_hand_landmarks)
 
-    result = {
-        "fingersAmount": fingers_amount
-    }
-
-    return json.dumps(result)
+    return fingers_amount
 
 
 # counts the fingers of a single hand
@@ -96,8 +101,14 @@ def count_fingers_on_single_hand(single_hand_landmarks):
     if pinky_tip.y < pinky_dip.y:
         count += 1
 
-    # thumb (special case)
-    if thumb_tip.x < index_finger_mcp.x:
+    # thumb is up (special case)
+
+    # if it's the thumb of the left hand
+    if thumb_tip.x < pinky_tip.x and thumb_tip.x < index_finger_mcp.x:
+        count += 1
+
+    # if it's the thumb of the right hand
+    if thumb_tip.x > pinky_tip.x and thumb_tip.x > index_finger_mcp.x:
         count += 1
 
     return count

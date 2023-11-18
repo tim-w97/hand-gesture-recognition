@@ -1,4 +1,4 @@
-import recognizer
+import hand_recognizer
 import cv2
 
 
@@ -6,7 +6,7 @@ image_path = 'test_images/test_1.jpg'  # Replace with the path to your image fil
 image_np = cv2.imread(image_path)
 image_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
 
-json = recognizer.recognize_gestures(
+json = hand_recognizer.recognize_all(
   numpy_image=image_rgb
 )
 
