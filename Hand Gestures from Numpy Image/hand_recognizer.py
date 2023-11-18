@@ -40,7 +40,13 @@ def recognize_gestures(numpy_image):
         if len(gesture_list) == 0:
             continue
 
-        gestures.append(gesture_list[0].category_name)
+        gesture_name = gesture_list[0].category_name
+
+        if gesture_name == "None":
+            gestures.append("Unknown Gesture")
+            continue
+
+        gestures.append(gesture_name)
 
     return gestures
 
