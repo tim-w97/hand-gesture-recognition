@@ -36,7 +36,7 @@ def recognize_gestures(numpy_image):
 
     gestures = []
 
-    for gesture_list in recognition_result.gestures:
+    for idx, gesture_list in enumerate(recognition_result.gestures):
         if len(gesture_list) == 0:
             continue
 
@@ -46,7 +46,16 @@ def recognize_gestures(numpy_image):
             gestures.append("Unknown Gesture")
             continue
 
-        gestures.append(gesture_name)
+        single_hand_landmarks = recognition_result.hand_landmarks[idx]
+        middle_finger_mcp = single_hand_landmarks[9]
+
+        gesture_info = {
+            "name": gesture_name,
+            "pos_x": middle_finger_mcp.x,
+            "pos_y": middle_finger_mcp.y,
+        }
+
+        gestures.append(gesture_info)
 
     return gestures
 
