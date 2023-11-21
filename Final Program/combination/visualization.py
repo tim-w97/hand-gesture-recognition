@@ -10,10 +10,10 @@ def add_visualization(numpy_image, json):
     data = json_parser.loads(json)
 
     for gesture in data['gestures']:
+        text = gesture['name']
+
         abs_pos_x = gesture['pos_x'] * width
         abs_pos_y = gesture['pos_y'] * height
-
-        text = gesture['name']
 
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 2

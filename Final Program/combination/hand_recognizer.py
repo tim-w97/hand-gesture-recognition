@@ -43,7 +43,6 @@ def recognize_gestures(numpy_image):
         gesture_name = gesture_list[0].category_name
 
         if gesture_name == "None":
-            gestures.append("Unknown Gesture")
             continue
 
         single_hand_landmarks = recognition_result.hand_landmarks[idx]
