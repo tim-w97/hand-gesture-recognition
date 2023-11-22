@@ -1,5 +1,6 @@
 import cv2
-import json as json_parser
+import json
+import pprint
 
 
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -8,11 +9,16 @@ thickness = 5
 text_color = (0, 255, 0)
 
 
-def visualize_json(numpy_image, json):
+def visualize_json(numpy_image, json_str):
+    prettified_json = pprint.pformat(
+        json.loads(json_str),
+        compact=True
+    )
+
     custom_font_scale = 1
     custom_thickness = 2
 
-    text_width, text_height = cv2.getTextSize(json, font, custom_font_scale, custom_thickness)[0]
+    text_width, text_height = cv2.getTextSize(prettified_json, font, custom_font_scale, custom_thickness)[0]
 
     offset = 10
 
@@ -21,7 +27,7 @@ def visualize_json(numpy_image, json):
 
     cv2.putText(
         numpy_image,
-        json,
+        prettified_json,
         (text_pos_x, text_pos_y),
         font,
         custom_font_scale,
@@ -82,13 +88,13 @@ def visualize_fingers_amount(numpy_image, fingers_amount):
     return numpy_image
 
 
-def add_visualization(numpy_image, json):
-    data = json_parser.loads(json)
+def add_visualization(numpy_image, json_str):
+    data = json.loads(json_str)
 
     # draw json on the image
     image_with_visualization = visualize_json(
         numpy_image,
-        json
+        json_str
     )
 
     # draw gesture names on the image
