@@ -8,15 +8,34 @@ thickness = 5
 text_color = (0, 255, 0)
 
 
-def add_visualization(numpy_image, json):
-    image_with_visualization = numpy_image.copy()
+def visualize_json(numpy_image, json):
+    custom_font_scale = 1
+    custom_thickness = 2
 
+    text_width, text_height = cv2.getTextSize(json, font, custom_font_scale, custom_thickness)[0]
+
+    offset = 10
+
+    text_pos_x = offset
+    text_pos_y = int(text_height + offset)
+
+    cv2.putText(
+        numpy_image,
+        json,
+        (text_pos_x, text_pos_y),
+        font,
+        custom_font_scale,
+        text_color,
+        custom_thickness
+    )
+
+    return numpy_image
+
+
+def visualize_gestures(numpy_image, gestures):
     screen_height, screen_width, channels = numpy_image.shape
 
-    data = json_parser.loads(json)
-
-    # draw gesture names on the image
-    for gesture in data['gestures']:
+    for gesture in gestures:
         text = gesture['name']
 
         abs_pos_x = gesture['pos_x'] * screen_width
@@ -28,7 +47,7 @@ def add_visualization(numpy_image, json):
         text_pos_y = int(abs_pos_y + text_height)
 
         cv2.putText(
-            image_with_visualization,
+            numpy_image,
             text,
             (text_pos_x, text_pos_y),
             font,
@@ -37,8 +56,12 @@ def add_visualization(numpy_image, json):
             thickness
         )
 
-    # draw fingers amount on the image
-    fingers_amount = data['totalFingersAmount']
+    return numpy_image
+
+
+def visualize_fingers_amount(numpy_image, fingers_amount):
+    screen_height, screen_width, channels = numpy_image.shape
+
     text = f'{fingers_amount} Fingers raised'
 
     text_width, text_height = cv2.getTextSize(text, font, font_scale, thickness)[0]
@@ -47,13 +70,37 @@ def add_visualization(numpy_image, json):
     text_pos_y = int(screen_height - text_height / 2)
 
     cv2.putText(
-        image_with_visualization,
+        numpy_image,
         text,
         (text_pos_x, text_pos_y),
         font,
         font_scale,
         text_color,
         thickness
+    )
+
+    return numpy_image
+
+
+def add_visualization(numpy_image, json):
+    data = json_parser.loads(json)
+
+    # draw json on the image
+    image_with_visualization = visualize_json(
+        numpy_image,
+        json
+    )
+
+    # draw gesture names on the image
+    image_with_visualization = visualize_gestures(
+        image_with_visualization,
+        gestures=data['gestures']
+    )
+
+    # draw fingers amount on the image
+    image_with_visualization = visualize_fingers_amount(
+        image_with_visualization,
+        fingers_amount=data['totalFingersAmount']
     )
 
     return image_with_visualization
