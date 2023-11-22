@@ -1,6 +1,5 @@
 import cv2
 import json
-import pprint
 
 
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -10,15 +9,10 @@ text_color = (0, 255, 0)
 
 
 def visualize_json(numpy_image, json_str):
-    prettified_json = pprint.pformat(
-        json.loads(json_str),
-        compact=True
-    )
-
     custom_font_scale = 1
     custom_thickness = 2
 
-    text_width, text_height = cv2.getTextSize(prettified_json, font, custom_font_scale, custom_thickness)[0]
+    text_width, text_height = cv2.getTextSize(json_str, font, custom_font_scale, custom_thickness)[0]
 
     offset = 10
 
@@ -27,7 +21,7 @@ def visualize_json(numpy_image, json_str):
 
     cv2.putText(
         numpy_image,
-        prettified_json,
+        json_str,
         (text_pos_x, text_pos_y),
         font,
         custom_font_scale,

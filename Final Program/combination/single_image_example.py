@@ -1,8 +1,6 @@
 from hand_recognizer import recognize_all
 from visualization import add_visualization
 import cv2
-import pprint
-import json
 
 
 def recognize_capture(numpy_image):
@@ -16,10 +14,7 @@ def recognize_capture(numpy_image):
 
     print()
 
-    pprint.pprint(
-        json.loads(json_str),
-        compact=True
-    )
+    print(json_str)
 
     image_with_visualization = add_visualization(
         numpy_image,
